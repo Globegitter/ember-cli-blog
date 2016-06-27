@@ -1,38 +1,55 @@
 /* jshint node: true */
 
 module.exports = function(environment) {
-	var ENV = {
-		environment: environment,
-		baseURL: '/',
-		locationType: 'auto',
-		EmberENV: {
-			FEATURES: {
-				// Here you can enable experimental features on an ember canary build
-				// e.g. 'with-controller': true
-			}
-		},
+  var ENV = {
+    modulePrefix: 'myapp',
+    environment: environment,
+    baseURL: '/',
+    locationType: 'auto',
 
-		APP: {
-			// Here you can pass flags/options to your application instance
-			// when it is created
-		}
-	};
+    EmberENV: {
+      FEATURES: {
+        // Here you can enable experimental features on an ember canary build
+        // e.g. 'with-controller': true
+      }
+    },
 
-	if (environment === 'development') {
-		// LOG_MODULE_RESOLVER is needed for pre-1.6.0
-		ENV.LOG_MODULE_RESOLVER = true;
+    APP: {
+      // Here you can pass flags/options to your application instance
+      // when it is created
+    }
+  };
 
-		ENV.APP.LOG_RESOLVER = true;
-		ENV.APP.LOG_ACTIVE_GENERATION = true;
-		ENV.APP.LOG_MODULE_RESOLVER = true;
-		// ENV.APP.LOG_TRANSITIONS = true;
-		// ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-		ENV.APP.LOG_VIEW_LOOKUPS = true;
-	}
+  if (environment === 'development') {
+    // ENV.APP.LOG_RESOLVER = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
+    // ENV.APP.LOG_TRANSITIONS = true;
+    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+  }
 
-	if (environment === 'production') {
+  if (environment === 'test') {
+    // Testem prefers this...
+    ENV.baseURL = '/';
+    ENV.locationType = 'none';
 
-	}
+    // keep test console output quieter
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
 
-	return ENV;
+    ENV.APP.rootElement = '#ember-testing';
+  }
+
+
+  ENV.remote_couch = 'http://localhost:5984/bloggr';
+  ENV.local_couch = 'bloggr';
+  if (environment === 'production') {
+    ENV.baseURL = '/';
+    ENV.remote_couch = 'https://martinic.cloudant.com/bloggr';
+  }
+  ENV.contentSecurityPolicy = {
+    'connect-src': "'self' " + ENV.remote_couch.substring(0, ENV.remote_couch.indexOf('/', 9))
+  };
+
+  return ENV;
 };
